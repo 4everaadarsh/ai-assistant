@@ -1,5 +1,22 @@
-BACKEND/.env
-node_modules/
-*.db
+# Environment files
 .env
+.env.*
+BACKEND/.env
+
+# Node modules
+node_modules/
+BACKEND/node_modules/
+
+# Database
+*.db
+database.db
+
+# Logs
+*.log
+
+# VS Code
 .vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
