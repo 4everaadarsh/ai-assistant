@@ -350,8 +350,7 @@ function initAiCopilot() {
             
             let gotResponse = false;
             try {
-                const res = await fetch('http://localhost:5000/api/copilot/chat', {
-                    method: 'POST',
+                  const res = await fetch('https://dentalai-os-backend.onrender.com/api/copilot/chat', {                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: query })
                 });

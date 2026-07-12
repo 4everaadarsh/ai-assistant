@@ -12,7 +12,7 @@ class ClinicStore extends EventTarget {
 
     async loadStateFromBackend() {
         try {
-            const res = await fetch('http://localhost:5000/api/state');
+            const res = await fetch('https://dentalai-os-backend.onrender.com/api/state');
             if (res.ok) {
                 const data = await res.json();
                 this.activeClinicId = data.activeClinicId;
@@ -411,7 +411,7 @@ Rules:
             this.currentUser.clinicId = clinicId;
 
             // Sync setting to backend in background
-            fetch('http://localhost:5000/api/settings', {
+            fetch('https://dentalai-os-backend.onrender.com/api/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ activeClinicId: clinicId })
@@ -441,7 +441,7 @@ Rules:
         }
 
         // Sync setting to backend in background
-        fetch('http://localhost:5000/api/settings', {
+        fetch('https://dentalai-os-backend.onrender.com/api/settings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ activeUserId: userId })
@@ -466,7 +466,7 @@ Rules:
             this.patients[index] = { ...this.patients[index], ...updatedData };
 
             // Sync update to backend in background
-            fetch(`http://localhost:5000/api/patients/${patientId}`, {
+            fetch(`https://dentalai-os-backend.onrender.com/api/patients/${patientId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData)
@@ -491,7 +491,7 @@ Rules:
             patient.notes.unshift(newNote);
 
             // Sync note to backend
-            fetch(`http://localhost:5000/api/patients/${patientId}/notes`, {
+            fetch(`https://dentalai-os-backend.onrender.com/api/patients/${patientId}/notes`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: noteText, provider: provider, id: newNote.id })
@@ -515,7 +515,7 @@ Rules:
             patient.notes = patient.notes.filter(n => n.id !== noteId);
 
             // Sync note delete to backend
-            fetch(`http://localhost:5000/api/patients/${patientId}/notes/${noteId}`, {
+            fetch(`https://dentalai-os-backend.onrender.com/api/patients/${patientId}/notes/${noteId}`, {
                 method: 'DELETE'
             }).catch(err => console.error("Failed to sync note delete to backend:", err));
 
@@ -562,7 +562,7 @@ Rules:
         });
 
         // Sync to backend
-        fetch('http://localhost:5000/api/appointments', {
+        fetch('https://dentalai-os-backend.onrender.com/api/appointments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...newAppt, clinic_id: this.activeClinicId })
@@ -591,7 +591,7 @@ Rules:
             });
 
             // Sync to backend
-            fetch(`http://localhost:5000/api/appointments/${apptId}`, {
+            fetch(`https://dentalai-os-backend.onrender.com/api/appointments/${apptId}`, {
                 method: 'DELETE'
             }).catch(err => console.error("Failed to sync appointment cancel to backend:", err));
 
@@ -609,7 +609,7 @@ Rules:
             appt.status = newStatus;
 
             // Sync to backend
-            fetch(`http://localhost:5000/api/appointments/${apptId}`, {
+            fetch(`https://dentalai-os-backend.onrender.com/api/appointments/${apptId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
@@ -643,7 +643,7 @@ Rules:
         this.notifications.forEach(n => n.read = true);
 
         // Sync to backend
-        fetch('http://localhost:5000/api/notifications/read-all', {
+        fetch('https://dentalai-os-backend.onrender.com/api/notifications/read-all', {
             method: 'PUT'
         }).catch(err => console.error("Failed to sync read-all notifications to backend:", err));
 
@@ -659,7 +659,7 @@ Rules:
         });
 
         // Sync to backend
-        fetch('http://localhost:5000/api/settings', {
+        fetch('https://dentalai-os-backend.onrender.com/api/settings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ aiPrompt: newPrompt })
@@ -694,7 +694,7 @@ Rules:
     // NLP Conversational chatbot simulator engine
     async simulateChatReply(userMessage) {
         try {
-            const res = await fetch('http://localhost:5000/api/receptionist/chat', {
+            const res = await fetch('https://dentalai-os-backend.onrender.com/api/receptionist/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: userMessage, prompt: this.aiSettings.prompt })
