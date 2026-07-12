@@ -1,0 +1,5 @@
+BACKEND/.env
+node_modules/
+*.db
+.env
+.vscode/

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentalAI OS - Intelligent Dental Practice Management Platform</title>
+    <meta name="description" content="DentalAI OS is a premium practice management and automated AI receptionist platform for modern dental clinics.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- App Root Container -->
+    <div id="app-root">
+        <!-- Sidebar Navigation (Hidden on Login screen) -->
+        <aside id="sidebar" class="sidebar hidden">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="tooth-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><path d="M9 9a3 3 0 1 0 6 0"/></svg>
+                </div>
+                <div class="brand-details">
+                    <span class="brand-name">DentalAI <span class="brand-suffix">OS</span></span>
+                    <span class="brand-version">v2.4 Enterprise</span>
+                </div>
+            </div>
+
+            <div class="sidebar-clinic-selector">
+                <div class="clinic-info">
+                    <span class="clinic-label">Active Clinic</span>
+                    <span class="clinic-name" id="clinic-name-display">Apex Dental, Bellevue</span>
+                </div>
+                <i data-lucide="chevrons-up-down" class="clinic-selector-arrow"></i>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li>
+                        <a href="#dashboard" class="nav-link active" id="nav-dashboard">
+                            <i data-lucide="layout-dashboard"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#patients" class="nav-link" id="nav-patients">
+                            <i data-lucide="users"></i>
+                            <span>Patients</span>
+                            <span class="nav-badge" id="badge-patients-count">--</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#appointments" class="nav-link" id="nav-appointments">
+                            <i data-lucide="calendar"></i>
+                            <span>Appointments</span>
+                            <span class="nav-badge alert" id="badge-appt-today">--</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#receptionist" class="nav-link" id="nav-receptionist">
+                            <i data-lucide="bot"></i>
+                            <span>AI Receptionist</span>
+                            <span class="pulse-indicator-small"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#analytics" class="nav-link" id="nav-analytics">
+                            <i data-lucide="trending-up"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile-summary">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100" alt="Dr. Sarah Mercer" class="user-avatar" id="user-avatar-display">
+                    <div class="user-info">
+                        <span class="user-name">Dr. S. Mercer</span>
+                        <span class="user-role">Lead Dentist</span>
+                    </div>
+                </div>
+                <button class="btn-logout" id="sidebar-logout-btn">
+                    <i data-lucide="log-out"></i>
+                    <span>Log Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="content-wrapper full-width">
+            <!-- Header bar (Hidden on Login screen) -->
+            <header id="top-header" class="top-header hidden">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobile-sidebar-toggle">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="search-bar-global">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="global-search-input" placeholder="Search patients, appointments, or billing records... (Cmd+K)">
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Status Indicators -->
+                    <div class="status-indicator-group">
+                        <div class="status-pill green">
+                            <span class="pulse-dot"></span>
+                            <span>AI Receptionist Live</span>
+                        </div>
+                        <div class="status-pill purple">
+                            <i data-lucide="cpu" class="icon-small"></i>
+                            <span>DentalAI Core v2.4</span>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="header-action-btn" id="theme-toggle-btn" title="Toggle Dark/Light Mode">
+                        <i data-lucide="sun" class="sun-icon"></i>
+                        <i data-lucide="moon" class="moon-icon"></i>
+                    </button>
+
+                    <!-- Notifications -->
+                    <div class="notification-dropdown-container">
+                        <button class="header-action-btn" id="notifications-btn" title="Notifications">
+                            <i data-lucide="bell"></i>
+                            <span class="notification-badge hidden" id="header-notif-count">0</span>
+                        </button>
+                        <div class="notification-dropdown hidden" id="notification-dropdown-menu">
+                            <div class="dropdown-header">
+                                <h3>Notifications</h3>
+                                <button id="mark-all-read-btn">Mark all read</button>
+                            </div>
+                            <div class="dropdown-list" id="notification-list-container">
+                                <!-- Dynamic notifications load here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User quick settings menu -->
+                    <div class="user-dropdown-container">
+                        <div class="user-profile-trigger" id="user-profile-trigger">
+                            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100" alt="Dr. Sarah Mercer" class="avatar-small" id="header-avatar-img">
+                            <i data-lucide="chevron-down" class="chevron-arrow"></i>
+                        </div>
+                        <div class="user-dropdown-menu hidden" id="user-dropdown-menu">
+                            <div class="dropdown-header">
+                                <h3>Switch Account</h3>
+                                <p>Change active practitioner profile</p>
+                            </div>
+                            <div class="dropdown-list">
+                                <div class="user-switch-item active" data-user-id="mercer" id="user-item-mercer">
+                                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100" class="avatar-small">
+                                    <div class="user-item-details">
+                                        <span class="user-item-name">Dr. Sarah Mercer, DDS</span>
+                                        <span class="user-item-role">Lead Dentist</span>
+                                    </div>
+                                    <i data-lucide="check" class="check-icon"></i>
+                                </div>
+                                <div class="user-switch-item" data-user-id="ross" id="user-item-ross">
+                                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=100" class="avatar-small">
+                                    <div class="user-item-details">
+                                        <span class="user-item-name">Dr. Arthur Ross, DMD</span>
+                                        <span class="user-item-role">Endodontist Specialist</span>
+                                    </div>
+                                    <i data-lucide="check" class="check-icon hidden"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic View Container -->
+            <div id="view-container" class="view-container">
+                <!-- Page contents loaded via JS router -->
+                <div class="page-loader-spinner" id="global-page-loader">
+                    <div class="spinner"></div>
+                    <p>Syncing clinic data...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating AI Copilot Widget (Interactive sidebar helper) -->
+    <div id="ai-copilot-widget" class="ai-copilot hidden">
+        <button class="copilot-toggle" id="copilot-toggle-btn">
+            <div class="copilot-icon-container">
+                <i data-lucide="sparkles" class="icon-glow"></i>
+            </div>
+            <span class="copilot-text">DentalAI Copilot</span>
+            <span class="badge-pill">Beta</span>
+        </button>
+        <div class="copilot-panel hidden" id="copilot-panel">
+            <div class="copilot-header">
+                <div class="copilot-title">
+                    <i data-lucide="sparkles"></i>
+                    <div>
+                        <h4>DentalAI Copilot</h4>
+                        <p>Clinical assistant & chart analyzer</p>
+                    </div>
+                </div>
+                <button class="btn-close-copilot" id="close-copilot-btn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="copilot-chat-body" id="copilot-chat-body">
+                <div class="chat-message system">
+                    Hi Dr. Mercer! Ask me anything about your schedule, patient histories, or diagnostic findings. Try typing "Summarize John Doe's treatment plan".
+                </div>
+            </div>
+            <div class="copilot-input-area">
+                <input type="text" id="copilot-input" placeholder="Ask DentalAI Copilot...">
+                <button id="copilot-send-btn">
+                    <i data-lucide="send"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Core SPA Router & Views modules -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
