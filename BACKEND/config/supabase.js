@@ -11,9 +11,19 @@ if (supabaseUrl && supabaseKey) {
         auth: {
             persistSession: false,
             autoRefreshToken: false
+        },
+        global: {
+            fetch: (url, options) => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1000);
+                const signal = options?.signal
+                    ? AbortSignal.any([options.signal, controller.signal])
+                    : controller.signal;
+                return fetch(url, { ...options, signal }).finally(() => clearTimeout(timeoutId));
+            }
         }
     });
-    console.log(`[Supabase Config] Client initialized for ${supabaseUrl}`);
+    console.log(`[Supabase Config] Production database client connected: ${supabaseUrl}`);
 } else {
     console.warn('[Supabase Config] SUPABASE_URL and SUPABASE_KEY not set. Using in-memory fallback database.');
 }

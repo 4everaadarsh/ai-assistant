@@ -2,10 +2,12 @@ const { supabase } = require('../config/supabase');
 const memoryDb = require('./memoryDb');
 const patientService = require('./patientService');
 
+let isSupabaseOffline = false;
+
 class AppointmentService {
     async getAllAppointments() {
         try {
-            if (!supabase) throw new Error('Supabase not configured');
+            if (!supabase || isSupabaseOffline) throw new Error('Supabase offline or not configured');
             const { data, error } = await supabase
                 .from('appointments')
                 .select('*');
@@ -21,7 +23,10 @@ class AppointmentService {
             }
             return data;
         } catch (e) {
-            console.warn('[AppointmentService] Supabase fetch failed. Falling back to local memory database:', e.message);
+            if (!isSupabaseOffline) {
+                isSupabaseOffline = true;
+                console.warn('[AppointmentService] Supabase fetch failed. Switching to local memory database:', e.message);
+            }
             return memoryDb.getAppointments();
         }
     }
@@ -114,7 +119,7 @@ class AppointmentService {
             const appt = await this.getAppointmentById(id);
             const { data, error } = await supabase
                 .from('appointments')
-                .delete()
+                .update({ status: 'cancelled' })
                 .eq('id', id)
                 .select()
                 .single();
@@ -122,7 +127,7 @@ class AppointmentService {
             if (error) throw error;
 
             // Sync fallback db
-            memoryDb.deleteAppointment(id);
+            memoryDb.updateAppointment(id, { status: 'cancelled' });
 
             if (appt) {
                 // Clear patient next appointment
@@ -134,10 +139,11 @@ class AppointmentService {
                 await this.addCancellationNotification(appt);
             }
 
-            return data || { id };
+            return data || { id, status: 'cancelled' };
         } catch (e) {
-            console.warn(`[AppointmentService] Supabase delete appointment ${id} failed. Executing on memory database:`, e.message);
-            return memoryDb.deleteAppointment(id);
+            console.warn(`[AppointmentService] Supabase soft-cancel appointment ${id} failed. Executing on memory database:`, e.message);
+            const updated = memoryDb.updateAppointment(id, { status: 'cancelled' });
+            return updated || { id, status: 'cancelled' };
         }
     }
 
@@ -175,6 +181,9 @@ class AppointmentService {
         } catch (e) {
             memoryDb.addNotification(notif);
         }
+    }
+    isOfflineMode() {
+        return Boolean(isSupabaseOffline || !supabase);
     }
 }
 

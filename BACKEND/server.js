@@ -46,11 +46,19 @@ app.get('/', (req, res) => {
     });
 });
 
+const appointmentService = require('./services/appointmentService');
+const { apiKeyConfigured } = require('./config/gemini');
+
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime()
+        uptime: Math.floor(process.uptime()),
+        environment: process.env.NODE_ENV || 'development',
+        dependencies: {
+            database: appointmentService.isOfflineMode() ? 'degraded_local_memory' : 'online_supabase',
+            ai: apiKeyConfigured ? 'configured' : 'missing_api_key'
+        }
     });
 });
 

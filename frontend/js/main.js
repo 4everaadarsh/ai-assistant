@@ -350,9 +350,14 @@ function initAiCopilot() {
             
             let gotResponse = false;
             try {
-                  const res = await fetch('https://dentalai-os-backend.onrender.com/api/copilot/chat', {                    method: 'POST',
+                const apiBase = window.API_BASE_URL ||
+                    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:'
+                        ? 'http://localhost:5000'
+                        : 'https://dentalai-os-backend.onrender.com');
+                const res = await fetch(`${apiBase}/api/copilot/chat`, {
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: query })
+                    body: JSON.stringify({ message: query, sessionId: 'copilot-browser-session' })
                 });
                 if (res.ok) {
                     const data = await res.json();
