@@ -146,7 +146,14 @@ class IntentDetector {
             return this.createResult('GREETING', 0.90);
         }
 
-        // 15. Raw Parameters / Fragments Provided (e.g. Phone, Date, Time)
+        // 15. Out-of-Scope / General Casual Queries
+        if (this.matchesRegex(text, [
+            /\b(weather|temperature|forecast|sports|joke|president|politics|stock|recipe|crypto|bitcoin)\b/i
+        ])) {
+            return this.createResult('GENERAL_QUERY', 0.90);
+        }
+
+        // 16. Raw Parameters / Fragments Provided (e.g. Phone, Date, Time)
         if (this.matchesRegex(text, [
             /\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b/,
             /\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/i,

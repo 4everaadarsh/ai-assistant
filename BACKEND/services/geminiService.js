@@ -271,9 +271,10 @@ Respond in valid JSON format.`;
             detectedIntent = "CLINIC_HOURS";
             extractedAction = "NONE";
             replyText = "Yes, we gladly welcome families and patients of all ages, including children! We also accept walk-ins for dental emergencies whenever chair capacity permits.";
-        } else if (cleanMsg.match(/\b(weather|sports|joke|president|stock|recipe|crypto)\b/i)) {
+        } else if (cleanMsg.match(/\b(weather|temperature|forecast|sports|joke|president|politics|stock|recipe|crypto|bitcoin)\b/i)) {
             detectedIntent = "GENERAL_QUERY";
             extractedAction = "NONE";
+            entities = {};
             replyText = "I'm here to help with Apex Dental appointments, clinic services, and dental questions. If you'd like, I can help you schedule a visit!";
         } else if (cleanMsg.match(/\b(no make it|actually|instead|rather|change to)\b/i) || cleanMsg.match(/\b(friday|monday|tuesday|wednesday|thursday|saturday|sunday|tomorrow|evening|afternoon|morning)\s+instead\b/i)) {
             detectedIntent = "CORRECTION";
